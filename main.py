@@ -1,18 +1,19 @@
 from urllib import request
-import time
+import time, codecs
 from  bs4 import BeautifulSoup as soup
 
 
 v_page=0
 count = 0
-file = open("chick.csv","w")
-file.write("contador" + ","+ "usuario" + "," + "marca" + "," + "producto" + "," + "texto" + ","  + "precioActual" + "," + "precioAnterior")
+registro = ""
+file = codecs.open("chick.txt","w", "utf-8")
+file.write("cuenta" + "|" + "usuario" + "|" + "marca" + "|" + "producto" + "|" + "texto" + "|"  + "precioActual" + "|" + "precioAnterior" + "\n")
 while v_page < 3000:
     v_page += 1
     print ("buscando en pagina:" , v_page)
-    #urlpage = "https://www.chicfy.com/mas-nuevo/"+ str(v_page)
+    urlpage = "https://www.chicfy.com/mas-nuevo/"+ str(v_page)
     #urlpage = "https://www.chicfy.com/user/antonialop/" + str(v_page)
-    urlpage = "https://www.chicfy.com/tienda/" + str(v_page)
+    #urlpage = "https://www.chicfy.com/tienda/" + str(v_page)
     #print (urlpage)
     #Abrimos la conexion y nos traemos la pagina
     uCliente = request.urlopen(urlpage)
@@ -34,15 +35,16 @@ while v_page < 3000:
 
     for cL, cR, grada, modelo in zip(containersL,containersR, gradas, modelos) :
         count += 1
-        marca = grada.text.encode("utf-8")
-        producto = cL.a.text.encode("utf-8")
-        texto = cL.p.text.encode("utf-8")
-        precioactual = cR.div.text.encode("utf-8")
-        precioanterior = cR.span.text.encode("utf-8")
-        usuario = modelo.h5.a.text.encode("utf-8")
+        marca = grada.text#.encode("ISO-8859-1")
+        producto = cL.a.text#.encode("ISO-8859-1")
+        texto = cL.p.text#.encode("ISO-8859-1")
+        precioactual = cR.div.text#.encode("ISO-8859-1")
+        precioanterior = cR.span.text#.encode("ISO-8859-1")
+        usuario = modelo.h5.a.text#.encode("ISO-8859-1")
 
-        file.write(str(count) + "," + str(usuario) + "," + str(marca) + "," + str(producto) + "," + str(texto) + ","  + str(precioactual.strip()) + "," + str(precioanterior.strip()))
-        print(count, ",", usuario, ",", marca, "'", producto, ",", texto, ",", precioactual.strip(), ",",precioanterior.strip())
+        registro = str(count) + "|" + usuario.strip() + "|" + marca.strip() + "|" + producto.strip() + "|" + texto.strip() + "|"  + str(precioactual).strip() + "|" + str(precioanterior).strip() + "\n"
+        file.write(registro)
+        print(registro)
         # if "maison" in usuario.strip():
         #   print ("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         #   print (count , ",", usuario, ",",  marca, "'", producto, ",", texto , ",", precioactual.strip(), ",", precioanterior.strip() )
