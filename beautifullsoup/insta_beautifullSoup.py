@@ -11,16 +11,18 @@ import json , time
 #Some Global Testing variables
 
 # List instagram users to monitor
+#usersToMonitor=["ronaldo"]
 usersToMonitor=["maisontxell",
 				"_triatlon",
 				"keepgoing_es",
 				"chaneladdict123",
-				"katyackermann", 
-				"mariu666", 
+				"katyackermann",
+				"mariu666",
 				"iglesiasgabriela",
-				"msorannom"]
+ 				"msorannom"]
 
 # Elasticsearch params
+usarElastic=False
 elasticUser="user1"
 elasticPass="123456"
 elasticIP="localhost"
@@ -120,7 +122,108 @@ def checkValues(valor):
 
 	return int(newvalor)
 	
+def main_noElastic():
+	""" Main course """
 
+	# Comienza el trabajo por usuarios a monitorizar
+	i = 0
+	for usuario in usersToMonitor:
+		print('-----usuario: ' + usuario)
+		time.sleep(5)
+		i += 1
+		urlpage = "https://www.instagram.com/" + usuario + "/"
+		uCliente = request.urlopen(urlpage)
+		html_urlpage = uCliente.read()
+		uCliente.close()
+		soup_urlpage = soup(html_urlpage, "html.parser", )
+		#print(soup_urlpage)
+		#dataCompleta = soup_urlpage.find_all("div", {"class": "_bugdy"})
+		#dataCompleta = soup_urlpage.find("meta", property="og:description")
+		#dataCompleta = soup_urlpage.find_all("span", {"class": "_bkw5z"})
+		#dataCompleta = soup_urlpage.find_all("li", {"class": " _573jb"})
+
+		#---------
+		# Recogemos Followers
+		#---------
+		#Esto recoge la seccion del script numero 2
+		data_string = soup_urlpage.findAll('script')[1].string.encode('utf8')
+		#Esto separa la mierdaca del verdadero jason
+		pre_followers = str(data_string).split('"followed_by": {"count":')[1]
+		post_followers = str(pre_followers).split('}, "followed_by_viewer')[0]
+		print('followers: ' + post_followers)
+
+		#---------
+		# Recogemos followed by y posts
+		#---------
+		meta_data = soup_urlpage.find("meta", property="og:description")
+		pre_folloed_by2 = str(meta_data).split('Followers,')[1]
+		post_folloed_by = str(pre_folloed_by2).split('Following,')[0]
+		print('Followed_by: ' + post_folloed_by)
+
+
+		pre_posts = str(meta_data).split('Following,')[1]
+		pre_posts2 = str(pre_posts).split('Posts')[0]
+		print('Posts: ' + pre_posts2)
+
+
+#data_str3 = data_str2.split(';\'')[0]
+		#data_str = data_str3.split('gatekeepers')[0]
+		# Hay que buscar cortar y cerrar bien el json , pero dejarlo con lo necesario
+		# para tener los datos que necesitemos
+		#data_json = json.dumps(data_str)
+		#decoded_json = json.loads(str(data_json))
+		#print(str(decoded_json["entry_data"][0]["ProfilePage"][0]["user"][0]["followed_by"][0]["count"]))
+		#print(decoded_json["entry_data"][0])
+
+
+		#print(decoded_json)
+		#CONCLUSION:
+		# Los follows y los posts los sacaré del metacoentent, pero los followers lo mejor es sacarlo
+		# del javascript
+		# Tengo que sacar los followers del javascript y el resto del metacontent.
+		#
+
+		# The followers filed use 'title' to hide the real value
+		# here we extract this field.
+		# for item in dataCompleta:
+		# 	if str(item).find('title') >= 0:
+		# 		# print(item['title'])
+		# 		followersTittle = item['title']
+		# 	else:
+		# 		pass
+        #
+		# # print(now)
+		# # ------ remove dots and commas
+        #
+		# # - working publicaciones
+		# publicaciones = dataCompleta[0].text.replace(',', '')
+        #
+		# # - working followers
+		# # seguidores=dataCompleta[1].text.replace(',' , '')
+		# seguidores_v1 = followersTittle.replace(',', '')
+		# seguidores_v2 = seguidores_v1.replace('.', '')
+		# seguidores = seguidores_v2
+        #
+		# # - working follow
+		# seguidos = dataCompleta[2].text.replace(',', '')
+		# # --------------------------------------------------
+        #
+        #
+		# # ------ check for special characters
+		# # Vamos a tratar de averiguar si vienen cosas raras en los valores
+		# # como 1.6m (1.600.000) o 130k (130.000)
+		# publicaciones = checkValues(str(publicaciones))
+		# seguidores = checkValues(str(seguidores))
+		# seguidos = checkValues(str(seguidos))
+		# # ----------------------------------------------------
+        #
+		# # -- Insertion wheter is a new creation index or not.
+        #
+		# print("insertado ", elasticIndexCreated, elasticConnect, nextID, "fecha:", now, "usuario:", usuario,
+		# 		  "publicaciones:", publicaciones, "seguidores:", seguidores, "seguidos:", seguidos)
+
+
+		# break
 
 def main():
 
@@ -231,7 +334,10 @@ if __name__ == "__main__":
 	#print("----start----")
 	#print(datetime.now())
 	#print("....is being run directly")
-	main()
+	if usarElastic:
+		main()
+	else:
+		main_noElastic()
 	#print("----end----")
 else:
     print("....is being imported into another module")
