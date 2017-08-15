@@ -12,7 +12,7 @@ import json , time
 
 # List instagram users to monitor
 #usersToMonitor=["ronaldo"]
-usersToMonitor=["maisontxell",
+usersToMonitor=["maisontxell","katiapanteli"
 				"_triatlon",
 				"keepgoing_es",
 				"chaneladdict123",
