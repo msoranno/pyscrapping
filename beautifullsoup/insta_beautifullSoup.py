@@ -251,16 +251,16 @@ def main():
 
 			# --
 			# quitamos las comas de los valores
-			pre_posts2_v1=pre_posts2.text.replace(',' , '')
-			post_followers_v1=post_followers.text.replace(',' , '')
-			post_seguidos_v1=post_seguidos.text.replace(',' , '')
+			pre_posts2_v1=pre_posts2.replace(',' , '')
+			post_followers_v1=post_followers.replace(',' , '')
+			post_seguidos_v1=post_seguidos.replace(',' , '')
 
 			# ------ check for special characters
 			#Vamos a tratar de averiguar si vienen cosas raras en los valores
 			#como 1.6m (1.600.000) o 130k (130.000)
-			publicaciones = checkValues(str(pre_posts2))
-			seguidores = checkValues(str(post_followers))
-			seguidos = checkValues(str(post_seguidos))
+			publicaciones = checkValues(str(pre_posts2_v1))
+			seguidores = checkValues(str(post_followers_v1))
+			seguidos = checkValues(str(post_seguidos_v1))
 			# ----------------------------------------------------
 
 
