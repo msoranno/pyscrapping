@@ -228,7 +228,6 @@ def main():
 			# # --------------------------------------------------
 
 
-
 			#---------
 			# Recogemos Followers
 			#---------
@@ -250,8 +249,11 @@ def main():
 			pre_posts2 = str(pre_posts).split('Posts')[0]
 			#print('Posts: ' + pre_posts2)
 
-
-
+			# --
+			# quitamos las comas de los valores
+			pre_posts2_v1=pre_posts2.text.replace(',' , '')
+			post_followers_v1=post_followers.text.replace(',' , '')
+			post_seguidos_v1=post_seguidos.text.replace(',' , '')
 
 			# ------ check for special characters
 			#Vamos a tratar de averiguar si vienen cosas raras en los valores
